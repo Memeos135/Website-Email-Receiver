@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">EmailReceiver</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="title_unread">Unread</string>
+    <string name="email_addr">Email Address</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+</resources>

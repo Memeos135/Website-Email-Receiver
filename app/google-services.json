@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1056520975403",
+    "firebase_url": "https://emailreceiver-db3fa.firebaseio.com",
+    "project_id": "emailreceiver-db3fa",
+    "storage_bucket": "emailreceiver-db3fa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1056520975403:android:57ea8916b2d98ea02c666e",
+        "android_client_info": {
+          "package_name": "com.gama.emailreceiver"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1056520975403-i6vcv16i1lgiu5a2drrp04j3dqc1gjj6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDe3D5m8egyStinZ0Bcw0mI-Z2A6RQKIag"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1056520975403-i6vcv16i1lgiu5a2drrp04j3dqc1gjj6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
