@@ -13,7 +13,7 @@
 
     <fragment
         android:id="@+id/navigation_unread"
-        android:name="com.gama.emailreceiver.ui.notifications.UnreadFragment"
+        android:name="com.gama.emailreceiver.ui.unread.UnreadFragment"
         android:label="@string/title_unread"
         tools:layout="@layout/fragment_unread" />
 </navigation>

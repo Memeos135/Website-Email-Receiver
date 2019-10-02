@@ -1,4 +1,4 @@
-package com.gama.emailreceiver.ui.notifications
+package com.gama.emailreceiver.ui.unread
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

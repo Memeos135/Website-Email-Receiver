@@ -1,4 +1,4 @@
-package com.gama.emailreceiver.ui.notifications
+package com.gama.emailreceiver.ui.unread
 
 import android.app.Activity
 import android.app.ProgressDialog
@@ -13,7 +13,9 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.gama.emailreceiver.R
+import com.gama.emailreceiver.adapters.EmailsRecyclerAdapter
 import com.gama.emailreceiver.helpers.ProgressDialogHelper
 import com.gama.emailreceiver.utils.Constants
 import com.gama.emailreceiver.web_services.ServicePost
@@ -62,6 +64,8 @@ class UnreadFragment : Fragment() {
 
             btn_login.setOnClickListener { loginMethod(et_email.text.toString(), et_password.text.toString()) }
         }
+        // fetch emails - (sync and local storage on hold)
+        FetchAllEmailsAsyncTask(activity!!).execute()
     }
 
     private fun loginMethod(email: String, password: String){
@@ -148,7 +152,9 @@ class UnreadFragment : Fragment() {
                 progressDialog!!.cancel()
 
                 if(result!!.getEmailList() != null){
-                    Snackbar.make(activity.constraint_unread, "Emails have been received", Snackbar.LENGTH_SHORT).show()
+                    activity.text_unread.visibility = View.GONE
+                    activity.recyclerView.layoutManager = LinearLayoutManager(activity)
+                    activity.recyclerView.adapter = EmailsRecyclerAdapter(activity, result.getEmailList()!!)
                 }else{
                     Snackbar.make(activity.constraint_unread, "No emails received", Snackbar.LENGTH_SHORT).show()
                 }

@@ -2,7 +2,6 @@ package com.gama.emailreceiver.ui.dashboard
 
 import android.app.Activity
 import android.app.ProgressDialog
-import android.opengl.Visibility
 import android.os.AsyncTask
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -10,7 +9,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -63,6 +61,7 @@ class DashboardFragment : Fragment() {
 
             btn_login.setOnClickListener { loginMethod(et_email.text.toString(), et_password.text.toString()) }
         }
+        // fetch emails - (sync and local storage on hold)
         FetchAllEmailsAsyncTask(activity!!).execute()
     }
 
