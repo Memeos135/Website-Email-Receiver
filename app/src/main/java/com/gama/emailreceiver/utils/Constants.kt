@@ -2,6 +2,7 @@ package com.gama.emailreceiver.utils
 
 class Constants {
     companion object{
-        const val LOGGED_FLAG: String = "LOGGED_FLAG"
+        const val FCM_TOKEN: String = "FCM_TOKEN"
+        const val ID: String = "ID"
     }
 }

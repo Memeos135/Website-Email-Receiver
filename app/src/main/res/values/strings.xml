@@ -7,4 +7,5 @@
     <string name="email_addr">Email Address</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
+    <string name="fetching_emails">Fetching emails…</string>
 </resources>

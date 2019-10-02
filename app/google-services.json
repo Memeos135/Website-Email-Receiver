@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1056520975403-7evj6m5suhual9k2j5cil4v2adqhaabj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gama.emailreceiver",
+            "certificate_hash": "fee1cca8eb34fd3510517546c8fc86ba089babb0"
+          }
+        },
+        {
           "client_id": "1056520975403-i6vcv16i1lgiu5a2drrp04j3dqc1gjj6.apps.googleusercontent.com",
           "client_type": 3
         }
