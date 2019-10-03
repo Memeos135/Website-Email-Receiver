@@ -148,6 +148,8 @@ class DashboardFragment : Fragment() {
                 if(result!!.getEmailList() != null){
                     activity.text_dashboard.visibility = View.GONE
                     activity.recyclerView.layoutManager = LinearLayoutManager(activity)
+                    // ensure that emails are ordered by most recent
+                    result.getEmailList()!!.reverse()
                     activity.recyclerView.adapter = EmailsRecyclerAdapter(activity, result.getEmailList()!!)
 
                 }else{

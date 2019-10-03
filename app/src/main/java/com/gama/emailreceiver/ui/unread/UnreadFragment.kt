@@ -154,13 +154,22 @@ class UnreadFragment : Fragment() {
                 if(result!!.getEmailList() != null){
                     activity.text_unread.visibility = View.GONE
                     activity.recyclerView.layoutManager = LinearLayoutManager(activity)
+                    // ensure that emails are ordered by most recent
+                    result.getEmailList()!!.reverse()
                     activity.recyclerView.adapter = EmailsRecyclerAdapter(activity, result.getEmailList()!!)
+                    // sync the data
+                    syncExistingData(activity)
                 }else{
                     Snackbar.make(activity.constraint_unread, "No emails received", Snackbar.LENGTH_SHORT).show()
+                    // show the local data
+
                 }
             }
         }
 
+        private fun syncExistingData(activity: Activity){
+
+        }
     }
 
     private fun disableLoginUI(){

@@ -63,5 +63,4 @@ class FCMInstance: FirebaseMessagingService() {
 
         notificationManager!!.notify(Random.nextInt(), notificationBuilder.build())
     }
-
 }
