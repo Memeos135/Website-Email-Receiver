@@ -49,34 +49,10 @@ class ServicePost {
                     .get()
 
                 val response: Response = client.newCall(requestBuilder.build()).execute()
-                val result = response.body()!!.string()
+                var result = response.body()!!.string()
+                result = result.substring(0, result.length-1) + "]}"
 
-                val formattedResult = StringBuilder(result)
-
-                formattedResult.setCharAt(16, ' ')
-                formattedResult.setCharAt(result.length-3, ' ')
-
-
-                val charList = formattedResult.toString().toCharArray()
-
-                var i = 0
-                while(i < charList.size){
-                    if((charList[i] == '\'' && charList[i-1] == '}') || (charList[i] == '\'' && charList[i+1] == '{')){
-                        charList[i] = ' '
-                    }else if ((charList[i] == '\\' && charList[i+1] != 'n')){
-                        charList[i] = ' '
-                    }
-                    i++
-                }
-
-                var j = 0
-                var finalString = ""
-                while(j < charList.size){
-                    finalString += charList[j]
-                    j++
-                }
-
-                return Gson().fromJson(finalString, FetchAllResponseModel::class.java)
+                return Gson().fromJson(result, FetchAllResponseModel::class.java)
             }catch (e: Exception){
                 Log.d("Error", e.printStackTrace().toString())
                 return FetchAllResponseModel(null)

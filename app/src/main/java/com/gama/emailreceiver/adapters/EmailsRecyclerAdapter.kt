@@ -17,6 +17,7 @@ import android.os.Build
 import com.gama.emailreceiver.helpers.DialogHelper
 import com.gama.emailreceiver.helpers.EmailHelper
 import kotlinx.android.synthetic.main.dialog_layout.*
+import kotlin.collections.ArrayList
 
 
 class EmailsRecyclerAdapter(private val activity: Activity, private val emailsList: ArrayList<EmailModel>): RecyclerView.Adapter<EmailsRecyclerAdapter.EmailsViewHolder>() {

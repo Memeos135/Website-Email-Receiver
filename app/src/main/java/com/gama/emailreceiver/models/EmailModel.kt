@@ -1,6 +1,6 @@
 package com.gama.emailreceiver.models
 
-class EmailModel(private val name: String, private val email: String, private val subject: String, private  val body: String, private val dates: String) {
+class EmailModel(private var name: String, private val email: String, private var subject: String, private var body: String, private val dates: String) {
     fun getName(): String{
         return name
     }
@@ -19,5 +19,17 @@ class EmailModel(private val name: String, private val email: String, private va
 
     fun getdDates(): String{
         return dates
+    }
+
+    fun setName(newName: String){
+        name = newName
+    }
+
+    fun setSubject(newSubject: String){
+        subject = newSubject
+    }
+
+    fun setBody(newBody: String){
+        body = newBody
     }
 }
