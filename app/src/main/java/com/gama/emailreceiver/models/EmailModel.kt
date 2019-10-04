@@ -1,6 +1,18 @@
 package com.gama.emailreceiver.models
 
-class EmailModel(private var name: String, private val email: String, private var subject: String, private var body: String, private val dates: String) {
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "emails")
+class EmailModel(@ColumnInfo(name = "name")private var name: String,
+                 @ColumnInfo(name = "email")private var email: String,
+                 @ColumnInfo(name = "subject")private var subject: String,
+                 @ColumnInfo(name = "body")private var body: String,
+                 @ColumnInfo(name = "dates")private var dates: String) {
+    @PrimaryKey(autoGenerate = true)
+    private var uid: Int = 0
+
     fun getName(): String{
         return name
     }
@@ -17,8 +29,16 @@ class EmailModel(private var name: String, private val email: String, private va
         return body
     }
 
-    fun getdDates(): String{
+    fun getDates(): String{
         return dates
+    }
+
+    fun getUid(): Int{
+        return uid
+    }
+
+    fun setUid(newUid: Int){
+        uid = newUid
     }
 
     fun setName(newName: String){
@@ -31,5 +51,13 @@ class EmailModel(private var name: String, private val email: String, private va
 
     fun setBody(newBody: String){
         body = newBody
+    }
+
+    fun setEmail(newEmail: String){
+        email = newEmail
+    }
+
+    fun setDates(newDate: String){
+        dates = newDate
     }
 }

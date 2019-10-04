@@ -1,21 +1,24 @@
 package com.gama.emailreceiver.services
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
+import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.os.AsyncTask
 import android.os.Build
 import android.preference.PreferenceManager
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.gama.emailreceiver.MainActivity
 import com.gama.emailreceiver.R
+import com.gama.emailreceiver.models.EmailModel
+import com.gama.emailreceiver.room.DatabaseInstance
 import com.gama.emailreceiver.utils.Constants
+import com.gama.emailreceiver.web_services.ServicePost
+import com.gama.emailreceiver.web_services.response_models.FetchAllResponseModel
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import java.lang.ref.WeakReference
 import kotlin.random.Random
 
 class FCMInstance: FirebaseMessagingService() {
@@ -62,5 +65,41 @@ class FCMInstance: FirebaseMessagingService() {
             .setContentIntent(PendingIntent.getActivity(this, 0, Intent(this, MainActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT))
 
         notificationManager!!.notify(Random.nextInt(), notificationBuilder.build())
+
+        // sync data > fetch the whole list and filter those who are already stored locally
+        // add the remaining ones to the local storage record
+        FetchAllEmailsAsyncTask(this).execute()
+    }
+    class FetchAllEmailsAsyncTask(context: Context): AsyncTask<Void, Void, FetchAllResponseModel>(){
+        private var weakReference: WeakReference<Context> = WeakReference(context)
+
+        override fun doInBackground(vararg p0: Void?): FetchAllResponseModel {
+            return ServicePost.doGetEmails(weakReference.get())
+        }
+
+        override fun onPostExecute(result: FetchAllResponseModel?) {
+            super.onPostExecute(result)
+            if(result!!.getEmailList() != null){
+                QueryRoomAsyncTask(result.getEmailList()!!, weakReference.get()!!).execute()
+            }
+            }
+        }
+
+    class QueryRoomAsyncTask(private val fetchedList: ArrayList<EmailModel>, context: Context): AsyncTask<Void, Void, EmailModel>(){
+        private var weakReference: WeakReference<Context> = WeakReference(context)
+        override fun doInBackground(vararg p0: Void?): EmailModel {
+            for(item in fetchedList){
+                // query database and if it does not exist, add it
+                val fetchedList = DatabaseInstance.getInstance(weakReference.get()).recordDao().findBySubject(item.getSubject())
+                if(fetchedList.size == 0) {
+                    DatabaseInstance.getInstance(weakReference.get()).recordDao()
+                        .insertAll(item)
+                    Log.i("QueryRoomAsyncTask: ", "ADDED NEW ITEM")
+                }else{
+                    Log.i("QueryRoomAsyncTask: ", "ITEM EXISTS")
+                }
+            }
+            return EmailModel(null.toString(), null.toString(), null.toString(), null.toString(), null.toString())
+        }
     }
 }

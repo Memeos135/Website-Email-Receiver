@@ -34,7 +34,7 @@ class EmailsRecyclerAdapter(private val activity: Activity, private val emailsLi
 
     override fun onBindViewHolder(holder: EmailsViewHolder, position: Int) {
         holder.email.text = emailsList[position].getEmail()
-        holder.date.text = emailsList[position].getdDates().substring(0, 10)
+        holder.date.text = emailsList[position].getDates().substring(0, 10)
         holder.subject.text = emailsList[position].getSubject()
         holder.body.text = emailsList[position].getBody()
         holder.image.setImageResource(R.drawable.ic_markunread_black_24dp)

@@ -2,6 +2,7 @@ package com.gama.emailreceiver.ui.dashboard
 
 import android.app.Activity
 import android.app.ProgressDialog
+import android.content.Context
 import android.os.AsyncTask
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -17,6 +18,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.gama.emailreceiver.R
 import com.gama.emailreceiver.adapters.EmailsRecyclerAdapter
 import com.gama.emailreceiver.helpers.ProgressDialogHelper
+import com.gama.emailreceiver.models.EmailModel
+import com.gama.emailreceiver.room.DatabaseInstance
 import com.gama.emailreceiver.utils.Constants
 import com.gama.emailreceiver.web_services.ServicePost
 import com.gama.emailreceiver.web_services.response_models.FetchAllResponseModel
@@ -60,9 +63,9 @@ class DashboardFragment : Fragment() {
             btn_login.visibility = View.VISIBLE
 
             btn_login.setOnClickListener { loginMethod(et_email.text.toString(), et_password.text.toString()) }
+        }else{
+            FetchAllEmailsAsyncTask(activity!!).execute()
         }
-        // fetch emails - (sync and local storage on hold)
-        FetchAllEmailsAsyncTask(activity!!).execute()
     }
 
     private fun loginMethod(email: String, password: String){
@@ -85,7 +88,7 @@ class DashboardFragment : Fragment() {
                         }
 
                     } else {
-                        Snackbar.make(constraint_dash, task.result.toString(), Snackbar.LENGTH_SHORT).show()
+                        Snackbar.make(constraint_dash, "Authentication Error", Snackbar.LENGTH_SHORT).show()
                     }
                 }
         }
@@ -152,12 +155,57 @@ class DashboardFragment : Fragment() {
                     result.getEmailList()!!.reverse()
                     activity.recyclerView.adapter = EmailsRecyclerAdapter(activity, result.getEmailList()!!)
 
+                    // check if local storage exists or not, if not - add to local storage
+                    QueryRoomAsyncTask(result.getEmailList()!!, weakReference.get()!!).execute()
                 }else{
-                    Snackbar.make(activity.constraint_dash, "No emails received", Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(activity.constraint_dash, "No emails received - loading locally stored emails", Snackbar.LENGTH_SHORT).show()
+                    RoomGetExistingListAsyncTask(activity).execute()
                 }
             }
         }
+    }
 
+    class QueryRoomAsyncTask(private val fetchedList: ArrayList<EmailModel>, context: Context): AsyncTask<Void, Void, EmailModel>(){
+        private var weakReference: WeakReference<Context> = WeakReference(context)
+        override fun doInBackground(vararg p0: Void?): EmailModel {
+            for(item in fetchedList){
+                // query database and if it does not exist, add it
+                val fetchedList = DatabaseInstance.getInstance(weakReference.get()).recordDao().findBySubject(item.getSubject())
+                if(fetchedList.size == 0) {
+                    DatabaseInstance.getInstance(weakReference.get()).recordDao()
+                        .insertAll(item)
+                    Log.i("QueryRoomAsyncTask: ", "ADDED NEW ITEM")
+                }else{
+                    Log.i("QueryRoomAsyncTask: ", "ITEM EXISTS")
+                }
+            }
+            return EmailModel(null.toString(), null.toString(), null.toString(), null.toString(), null.toString())
+        }
+
+    }
+
+    class RoomGetExistingListAsyncTask(activity: Activity): AsyncTask<Void, Void, List<EmailModel>>(){
+        private var weakReference: WeakReference<Activity> = WeakReference(activity)
+
+        override fun doInBackground(vararg p0: Void?): List<EmailModel> {
+            if (!weakReference.get()!!.isFinishing) {
+                return DatabaseInstance.getInstance(weakReference.get()).recordDao().all
+            }
+            return emptyList()
+        }
+
+        override fun onPostExecute(result: List<EmailModel>?) {
+            super.onPostExecute(result)
+            if(result!!.isNotEmpty()){
+                val activity = weakReference.get()!!
+                activity.text_dashboard.visibility = View.GONE
+                activity.recyclerView.layoutManager = LinearLayoutManager(activity)
+                // ensure that emails are ordered by most recent
+                activity.recyclerView.adapter = EmailsRecyclerAdapter(activity, ArrayList(result))
+            }else{
+                Snackbar.make(weakReference.get()!!.constraint_dash, "Failed to load locally stored emails", Snackbar.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun disableLoginUI(){
