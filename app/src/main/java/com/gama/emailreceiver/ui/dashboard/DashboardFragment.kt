@@ -115,6 +115,7 @@ class DashboardFragment : Fragment() {
                 PreferenceManager.getDefaultSharedPreferences(activity).edit()
                     .putString(Constants.FCM_TOKEN, token).commit()
                 Snackbar.make(activity.constraint_dash, "FCM Token has been forwarded", Snackbar.LENGTH_SHORT).show()
+                FetchAllEmailsAsyncTask(activity).execute()
             }else{
                 Log.d("TokenUpdate:", " Failed to update token.")
             }
@@ -201,7 +202,7 @@ class DashboardFragment : Fragment() {
                 activity.text_dashboard.visibility = View.GONE
                 activity.recyclerView.layoutManager = LinearLayoutManager(activity)
                 // ensure that emails are ordered by most recent
-                activity.recyclerView.adapter = EmailsRecyclerAdapter(activity, ArrayList(result))
+                activity.recyclerView.adapter = EmailsRecyclerAdapter(activity, ArrayList(result.reversed()))
             }else{
                 Snackbar.make(weakReference.get()!!.constraint_dash, "Failed to load locally stored emails", Snackbar.LENGTH_SHORT).show()
             }

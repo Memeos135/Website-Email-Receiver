@@ -16,6 +16,7 @@ import android.app.Dialog
 import android.os.Build
 import com.gama.emailreceiver.helpers.DialogHelper
 import com.gama.emailreceiver.helpers.EmailHelper
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.dialog_layout.*
 import kotlin.collections.ArrayList
 
@@ -37,7 +38,8 @@ class EmailsRecyclerAdapter(private val activity: Activity, private val emailsLi
         holder.date.text = emailsList[position].getDates().substring(0, 10)
         holder.subject.text = emailsList[position].getSubject()
         holder.body.text = emailsList[position].getBody()
-        holder.image.setImageResource(R.drawable.ic_markunread_black_24dp)
+        holder.image.visibility = View.VISIBLE
+        holder.image.setImageResource(R.drawable.ic_check_box_black_24dp)
 
         if(holder.body.text.length > 35){
             holder.cv.setOnClickListener {
@@ -75,7 +77,10 @@ class EmailsRecyclerAdapter(private val activity: Activity, private val emailsLi
                 emailsList[position].getSubject().replace("\\n", "\n\n"),
                 emailsList[position].getBody().replace("\\n", "\n\n"))
             }
-            dialog.btn_mark_read.setOnClickListener {  }
+            dialog.btn_mark_read.setOnClickListener {
+                Snackbar.make(holder.cv, "Successfully marked as read", Snackbar.LENGTH_SHORT).show()
+                dialog.cancel()
+            }
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 dialog.create()

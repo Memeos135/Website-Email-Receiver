@@ -13,6 +13,12 @@ class EmailModel(@ColumnInfo(name = "name")private var name: String,
     @PrimaryKey(autoGenerate = true)
     private var uid: Int = 0
 
+    private var isRead = false
+
+    fun getIsRead(): Boolean{
+        return isRead
+    }
+
     fun getName(): String{
         return name
     }
@@ -59,5 +65,9 @@ class EmailModel(@ColumnInfo(name = "name")private var name: String,
 
     fun setDates(newDate: String){
         dates = newDate
+    }
+
+    fun setIsRead(isRead: Boolean){
+        this.isRead = isRead
     }
 }

@@ -124,6 +124,7 @@ class UnreadFragment : Fragment() {
                 PreferenceManager.getDefaultSharedPreferences(activity).edit()
                     .putString(Constants.FCM_TOKEN, token).commit()
                 Snackbar.make(activity.constraint_unread, "FCM Token has been forwarded", Snackbar.LENGTH_SHORT).show()
+                FetchAllEmailsAsyncTask(activity).execute()
             }else{
                 Log.d("TokenUpdate:", " Failed to update token.")
             }
@@ -163,8 +164,7 @@ class UnreadFragment : Fragment() {
                     activity.text_unread.visibility = View.GONE
                     activity.recyclerView.layoutManager = LinearLayoutManager(activity)
                     // ensure that emails are ordered by most recent
-                    result.getEmailList()!!.reverse()
-                    activity.recyclerView.adapter = EmailsRecyclerAdapter(activity, result.getEmailList()!!)
+                    activity.recyclerView.adapter = EmailsRecyclerAdapter(activity, ArrayList(result.getEmailList()!!.reversed()))
 
                     // check if local storage exists or not, if not - add to local storage
                     QueryRoomAsyncTask(result.getEmailList()!!, weakReference.get()!!).execute()
@@ -193,7 +193,6 @@ class UnreadFragment : Fragment() {
             }
             return EmailModel(null.toString(), null.toString(), null.toString(), null.toString(), null.toString())
         }
-
     }
 
     class RoomGetExistingListAsyncTask(activity: Activity): AsyncTask<Void, Void, List<EmailModel>>(){
@@ -213,7 +212,7 @@ class UnreadFragment : Fragment() {
                 activity.text_unread.visibility = View.GONE
                 activity.recyclerView.layoutManager = LinearLayoutManager(activity)
                 // ensure that emails are ordered by most recent
-                activity.recyclerView.adapter = EmailsRecyclerAdapter(activity, ArrayList(result))
+                activity.recyclerView.adapter = EmailsRecyclerAdapter(activity, ArrayList(result.reversed()))
             }else{
                 Snackbar.make(weakReference.get()!!.constraint_unread, "Failed to load locally stored emails", Snackbar.LENGTH_SHORT).show()
             }
