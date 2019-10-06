@@ -25,7 +25,7 @@ class FCMInstance: FirebaseMessagingService() {
 
     override fun onNewToken(p0: String) {
         super.onNewToken(p0)
-        Log.d("TOKEN UPDATED", p0)
+        Log.d(Constants.TOKEN_UPDATED, p0)
         // update the stored token
         PreferenceManager.getDefaultSharedPreferences(this).edit().putString(Constants.FCM_TOKEN, p0).commit()
         // send it to server
@@ -41,12 +41,12 @@ class FCMInstance: FirebaseMessagingService() {
 
     private fun showNotification(title: String?, body: String?) {
         val notificationManager: NotificationManager? = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        val notificationChannel = "com.gama.emailreceiver.test"
+        val notificationChannel = Constants.CHANNEL
 
         // if app is in foreground
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            val notificationChannel1 = NotificationChannel(notificationChannel, "Notification", NotificationManager.IMPORTANCE_DEFAULT)
-            notificationChannel1.description = "EmailReceiver Channel"
+            val notificationChannel1 = NotificationChannel(notificationChannel, Constants.NOTIFICATION, NotificationManager.IMPORTANCE_DEFAULT)
+            notificationChannel1.description = Constants.CHANNEL_DESCRIPTION
             notificationChannel1.enableLights(true)
             notificationChannel1.lightColor = Color.BLUE
 
@@ -94,12 +94,12 @@ class FCMInstance: FirebaseMessagingService() {
                 if(fetchedList.size == 0) {
                     DatabaseInstance.getInstance(weakReference.get()).recordDao()
                         .insertAll(item)
-                    Log.i("QueryRoomAsyncTask: ", "ADDED NEW ITEM")
+                    Log.i(Constants.QUERY_ROOM_ASYNCTASK, Constants.ADDED_NEW_ITEM)
                 }else{
-                    Log.i("QueryRoomAsyncTask: ", "ITEM EXISTS")
+                    Log.i(Constants.QUERY_ROOM_ASYNCTASK, Constants.ITEM_EXISTS)
                 }
             }
-            return EmailModel(null.toString(), null.toString(), null.toString(), null.toString(), null.toString())
+            return EmailModel(null.toString(), null.toString(), null.toString(), null.toString(), null.toString(), Constants.FALSE)
         }
     }
 }

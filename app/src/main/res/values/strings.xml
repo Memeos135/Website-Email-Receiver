@@ -10,4 +10,13 @@
     <string name="fetching_emails">Fetching emails…</string>
     <string name="reply">Email Reply</string>
     <string name="mark_read">Mark as Read</string>
+    <string name="updating">Updating email status…</string>
+    <string name="status_update_successful">Email status update successful</string>
+    <string name="status_update_failed">Failed to update email status</string>
+    <string name="token_retrieve_failed">FAILED TO RETREIVE TOKEN</string>
+    <string name="fcm_forwarded">FCM Token has been forwarded</string>
+    <string name="fcm_forward_failed">Failed to update token.</string>
+    <string name="no_emails_received">No emails received - loading locally stored emails</string>
+    <string name="no_emails_database">No unread emails in database</string>
+    <string name="failed_load_local">Failed to load locally stored emails</string>
 </resources>

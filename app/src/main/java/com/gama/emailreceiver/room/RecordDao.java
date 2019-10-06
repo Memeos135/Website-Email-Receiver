@@ -13,11 +13,14 @@ import java.util.List;
 
 @Dao
 public interface RecordDao {
-    @Query("SELECT * FROM emails")
+    @Query("SELECT * FROM emails ORDER BY dates")
     List<EmailModel> getAll();
 
     @Query("SELECT * FROM emails WHERE subject LIKE :subject ")
     List<EmailModel> findBySubject(String subject);
+
+    @Query("SELECT * FROM emails WHERE statusRead LIKE :statusRead ")
+    List<EmailModel> findByStatusRead(String statusRead);
 
     @Query("SELECT COUNT(*) from emails")
     int countUsers();
@@ -33,4 +36,7 @@ public interface RecordDao {
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     void updateRecord(EmailModel noteModel);
+
+    @Query("UPDATE emails SET statusRead =:statusRead WHERE dates = :dates AND subject =:subject")
+    void update(String statusRead, String dates, String subject);
 }

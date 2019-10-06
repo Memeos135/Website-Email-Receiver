@@ -3,20 +3,24 @@ package com.gama.emailreceiver.models
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.gson.Gson
 
 @Entity(tableName = "emails")
 class EmailModel(@ColumnInfo(name = "name")private var name: String,
                  @ColumnInfo(name = "email")private var email: String,
                  @ColumnInfo(name = "subject")private var subject: String,
                  @ColumnInfo(name = "body")private var body: String,
-                 @ColumnInfo(name = "dates")private var dates: String) {
+                 @ColumnInfo(name = "dates")private var dates: String,
+                 @ColumnInfo(name = "statusRead")private var statusRead: String) {
     @PrimaryKey(autoGenerate = true)
     private var uid: Int = 0
 
-    private var isRead = false
+    fun toJSON(): String{
+        return Gson().toJson(this)
+    }
 
-    fun getIsRead(): Boolean{
-        return isRead
+    fun getStatusRead(): String{
+        return statusRead
     }
 
     fun getName(): String{
@@ -67,7 +71,7 @@ class EmailModel(@ColumnInfo(name = "name")private var name: String,
         dates = newDate
     }
 
-    fun setIsRead(isRead: Boolean){
-        this.isRead = isRead
+    fun setStatusRead(statusRead: String){
+        this.statusRead = statusRead
     }
 }

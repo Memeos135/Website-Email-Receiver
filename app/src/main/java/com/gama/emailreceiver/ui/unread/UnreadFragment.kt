@@ -72,7 +72,7 @@ class UnreadFragment : Fragment() {
                 )
             }
         } else {
-            FetchAllEmailsAsyncTask(activity!!).execute()
+            FetchAllUnreadEmailsAsyncTask(activity!!).execute()
         }
     }
 
@@ -86,9 +86,9 @@ class UnreadFragment : Fragment() {
                         // get FCM token and store it
                         FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener { task: Task<InstanceIdResult> ->
                             if(!task.isSuccessful){
-                                Log.d("failed", "FAILED TO RETREIVE TOKEN")
+                                Log.d(Constants.FAILED, getString(R.string.token_retrieve_failed))
                             }else{
-                                Log.d("success", task.result!!.token)
+                                Log.d(Constants.SUCCESSFUL, task.result!!.token)
                                 // send it to server
                                 SendTokenAsyncTask(
                                     task.result!!.token,
@@ -97,7 +97,7 @@ class UnreadFragment : Fragment() {
                             }
                         }
                     } else {
-                        Snackbar.make(constraint_unread, "Authentication Error", Snackbar.LENGTH_SHORT).show()
+                        Snackbar.make(constraint_unread, Constants.AUTH_ERROR, Snackbar.LENGTH_SHORT).show()
                     }
                 }
         }
@@ -123,17 +123,17 @@ class UnreadFragment : Fragment() {
                 // store/update token
                 PreferenceManager.getDefaultSharedPreferences(activity).edit()
                     .putString(Constants.FCM_TOKEN, token).commit()
-                Snackbar.make(activity.constraint_unread, "FCM Token has been forwarded", Snackbar.LENGTH_SHORT).show()
-                FetchAllEmailsAsyncTask(activity).execute()
+                Snackbar.make(activity.constraint_unread, R.string.fcm_forwarded, Snackbar.LENGTH_SHORT).show()
+                FetchAllUnreadEmailsAsyncTask(activity).execute()
             }else{
-                Log.d("TokenUpdate:", " Failed to update token.")
+                Log.d(Constants.TOKEN_UPDATE, activity!!.getString(R.string.fcm_forward_failed))
             }
         }
 
     }
 
 
-    class FetchAllEmailsAsyncTask(activity: Activity): AsyncTask<Void, Void, FetchAllResponseModel>(){
+    class FetchAllUnreadEmailsAsyncTask(activity: Activity): AsyncTask<Void, Void, FetchAllResponseModel>(){
         private var weakReference: WeakReference<Activity> = WeakReference(activity)
         private var progressDialog: ProgressDialog? = null
 
@@ -149,7 +149,7 @@ class UnreadFragment : Fragment() {
         override fun doInBackground(vararg p0: Void?): FetchAllResponseModel {
             val activity = weakReference.get()
             if(!activity!!.isFinishing){
-                return ServicePost.doGetEmails(activity)
+                return ServicePost.doGetEmailsUnread(activity)
             }
             return FetchAllResponseModel(null)
         }
@@ -169,7 +169,7 @@ class UnreadFragment : Fragment() {
                     // check if local storage exists or not, if not - add to local storage
                     QueryRoomAsyncTask(result.getEmailList()!!, weakReference.get()!!).execute()
                 }else{
-                    Snackbar.make(activity.constraint_unread, "No emails received - loading locally stored emails", Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(activity.constraint_unread, activity.getString(R.string.no_emails_received), Snackbar.LENGTH_SHORT).show()
                     // show the local data
                     RoomGetExistingListAsyncTask(activity).execute()
                 }
@@ -186,12 +186,12 @@ class UnreadFragment : Fragment() {
                 if(fetchedList.size == 0) {
                     DatabaseInstance.getInstance(weakReference.get()).recordDao()
                         .insertAll(item)
-                    Log.i("QueryRoomAsyncTask: ", "ADDED NEW ITEM")
+                    Log.i(Constants.QUERY_ROOM_ASYNCTASK, Constants.ADDED_NEW_ITEM)
                 }else{
-                    Log.i("QueryRoomAsyncTask: ", "ITEM EXISTS")
+                    Log.i(Constants.QUERY_ROOM_ASYNCTASK, Constants.ITEM_EXISTS)
                 }
             }
-            return EmailModel(null.toString(), null.toString(), null.toString(), null.toString(), null.toString())
+            return EmailModel(null.toString(), null.toString(), null.toString(), null.toString(), null.toString(), Constants.FALSE)
         }
     }
 
@@ -200,7 +200,7 @@ class UnreadFragment : Fragment() {
 
         override fun doInBackground(vararg p0: Void?): List<EmailModel> {
             if (!weakReference.get()!!.isFinishing) {
-                return DatabaseInstance.getInstance(weakReference.get()).recordDao().all
+                return DatabaseInstance.getInstance(weakReference.get()).recordDao().findByStatusRead(Constants.FALSE)
             }
             return emptyList()
         }
@@ -214,7 +214,7 @@ class UnreadFragment : Fragment() {
                 // ensure that emails are ordered by most recent
                 activity.recyclerView.adapter = EmailsRecyclerAdapter(activity, ArrayList(result.reversed()))
             }else{
-                Snackbar.make(weakReference.get()!!.constraint_unread, "Failed to load locally stored emails", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(weakReference.get()!!.constraint_unread, weakReference.get()!!.getString(R.string.no_emails_database), Snackbar.LENGTH_SHORT).show()
             }
         }
     }
