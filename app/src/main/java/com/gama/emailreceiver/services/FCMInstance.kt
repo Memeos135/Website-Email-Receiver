@@ -90,7 +90,7 @@ class FCMInstance: FirebaseMessagingService() {
         override fun doInBackground(vararg p0: Void?): EmailModel {
             for(item in fetchedList){
                 // query database and if it does not exist, add it
-                val fetchedList = DatabaseInstance.getInstance(weakReference.get()).recordDao().findBySubject(item.getSubject())
+                val fetchedList = DatabaseInstance.getInstance(weakReference.get()).recordDao().findBySubject(item.getSubject(), item.getDates(), item.getBody())
                 if(fetchedList.size == 0) {
                     DatabaseInstance.getInstance(weakReference.get()).recordDao()
                         .insertAll(item)

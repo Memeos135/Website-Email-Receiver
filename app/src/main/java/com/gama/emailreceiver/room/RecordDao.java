@@ -16,8 +16,8 @@ public interface RecordDao {
     @Query("SELECT * FROM emails ORDER BY dates")
     List<EmailModel> getAll();
 
-    @Query("SELECT * FROM emails WHERE subject LIKE :subject ")
-    List<EmailModel> findBySubject(String subject);
+    @Query("SELECT * FROM emails WHERE subject LIKE :subject AND dates = :dates AND body = :bodys")
+    List<EmailModel> findBySubject(String subject, String dates, String bodys);
 
     @Query("SELECT * FROM emails WHERE statusRead LIKE :statusRead ")
     List<EmailModel> findByStatusRead(String statusRead);

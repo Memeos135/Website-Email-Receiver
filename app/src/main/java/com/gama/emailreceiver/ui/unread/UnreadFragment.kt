@@ -182,7 +182,7 @@ class UnreadFragment : Fragment() {
         override fun doInBackground(vararg p0: Void?): EmailModel {
             for(item in fetchedList){
                 // query database and if it does not exist, add it
-                val fetchedList = DatabaseInstance.getInstance(weakReference.get()).recordDao().findBySubject(item.getSubject())
+                val fetchedList = DatabaseInstance.getInstance(weakReference.get()).recordDao().findBySubject(item.getSubject(), item.getDates(), item.getBody())
                 if(fetchedList.size == 0) {
                     DatabaseInstance.getInstance(weakReference.get()).recordDao()
                         .insertAll(item)
@@ -212,7 +212,7 @@ class UnreadFragment : Fragment() {
                 activity.text_unread.visibility = View.GONE
                 activity.recyclerView.layoutManager = LinearLayoutManager(activity)
                 // ensure that emails are ordered by most recent
-                activity.recyclerView.adapter = EmailsRecyclerAdapter(activity, ArrayList(result.reversed()))
+                activity.recyclerView.adapter = EmailsRecyclerAdapter(activity, ArrayList(result))
             }else{
                 Snackbar.make(weakReference.get()!!.constraint_unread, weakReference.get()!!.getString(R.string.no_emails_database), Snackbar.LENGTH_SHORT).show()
             }
